@@ -1,0 +1,65 @@
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/
+
+# Visual Studio Code
+.vscode
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Visual Studio 2015
+.vs/
+
+
+#######################
+node_modules/
+dist/
+deploy/
+
+tmp
+.idea
+backups/
+
+TransientPanties\.Backend/TransientPanties\.Api/Database/posts\.json\.base
+
+TransientPanties\.Backend/TransientPanties\.Api/Database/posts\.json\.temporary
+
+TransientPanties\.Backend/transientpanties\.data\.db
+backups/
+/TransientPanties.Backend/TransientPanties.Api.v3.ncrunchsolution
+*.cache
+
+db/transientpanties.data.db
+db/transientpanties.data.db-journal
+db/transientpanties.data.db.local
+TransientPanties.UI/tp.code-workspace
+
+media/
+TransientPanties.Backend/TransientPanties.Api/Database/posts.json
+photoshops/*.svg
+
+docs/routes rules.xlsx
+backend/shed.db
+backend/Shed.Api/libraries/Npgsql.dll
