@@ -21,31 +21,17 @@ let getPeople () =
         FileData = { Extension = ".jpg"; ThumbHeight = 200; ThumbWidth = 300;}
         CreationDate = DateTime.Now;
         LastUpdateDate = DateTime.Now;
-        Tags = None;
-    }
+        Tags = None; }
     peopleStorage.Add(1, onePost)
     peopleStorage.Values |> Seq.map (fun p -> p)
 
-type TradeData = { 
-    Symbol:string; 
-    Timestamp:DateTime; 
-    Price:float;
-    TradeSize:float }
+// Interacting with F# data
 
-// Sample Data
-let trades = [
-    { Symbol = "BTC/USD"; Timestamp = new DateTime(2017, 07, 28, 10, 44, 33); Price = 2751.20; TradeSize = 0.01000000 };
-    { Symbol = "BTC/USD"; Timestamp = new DateTime(2017, 07, 28, 10, 44, 21); Price = 2750.20; TradeSize = 0.01000000 };
-    { Symbol = "BTC/USD"; Timestamp = new DateTime(2017, 07, 28, 10, 44, 21); Price = 2750.01; TradeSize = 0.40000000 };
-    { Symbol = "BTC/USD"; Timestamp = new DateTime(2017, 07, 28, 10, 44, 21); Price = 2750.01; TradeSize = 0.55898959 };
-    { Symbol = "BTC/USD"; Timestamp = new DateTime(2017, 07, 28, 10, 44, 03); Price = 2750.00; TradeSize = 0.86260000 };
-    { Symbol = "BTC/USD"; Timestamp = new DateTime(2017, 07, 28, 10, 44, 03); Price = 2750.00; TradeSize = 0.03000000 };
-    { Symbol = "BTC/USD"; Timestamp = new DateTime(2017, 07, 28, 10, 43, 31); Price = 2750.01; TradeSize = 0.44120000 } 
-    ]
+// http://www.codesuji.com/2017/07/29/F-and-Dapper/
 
 // Initialize connectionstring
-let databaseFilename = "shed.db"
-let connectionStringFile = sprintf "Data Source=%s;Version=3;" databaseFilename  
+let databaseFilename = __SOURCE_DIRECTORY__ + @"..\shed.db"
+let connectionStringFile = sprintf "Data Source=%s;Version=3;New=False;Compress=True;" databaseFilename  
 
 // Create database
 // SQLiteConnection.CreateFile(databaseFilename)
@@ -65,3 +51,19 @@ let addStuff () =
 
     let structureCommand = new SQLiteCommand(structureSql, connection)
     structureCommand.ExecuteNonQuery() 
+
+
+let getStuff () = 
+    let filteredSql = 
+        "select * From Posts " 
+        // "where symbol = @symbol and tradesize >= @mintradesize"
+
+    let results1 = 
+        let connection = new SQLiteConnection(connectionStringFile)
+        connection.Open()
+        connection.Query<Post>(filteredSql)
+
+    printfn "Query (1):"
+    results1 
+//|> Seq.iter (fun x -> 
+//    printfn "%-7s %-19s %.2f [%.8f]" x.Symbol (x.Timestamp.ToString("s")) x.Price x.TradeSize)

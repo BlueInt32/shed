@@ -1,6 +1,7 @@
 ﻿namespace Shed.Domain
 
 open System
+open System.Runtime.Serialization
 
 type FileType = Image | Video 
 type FileData = {
@@ -24,3 +25,15 @@ type Post = {
 module Say =
     let hello name =
         printfn "Hello %s" name
+
+
+/// Dummy types for prototyping
+[<DataContract>]
+type Foo =
+  { [<field: DataMember(Name = "foo")>]
+    foo : string }
+
+[<DataContract>]
+type Bar =
+  { [<field: DataMember(Name = "bar")>]
+    bar : string }

@@ -9,16 +9,6 @@ open System.Runtime.Serialization
 open Shed.Api.Rest
 open Shed.Domain
 
-[<DataContract>]
-type Foo =
-  { [<field: DataMember(Name = "foo")>]
-    foo : string }
-
-[<DataContract>]
-type Bar =
-  { [<field: DataMember(Name = "bar")>]
-    bar : string }
-
 let browse =
     request (fun r ->
         match r.queryParam "genre" with
@@ -31,7 +21,7 @@ let webPart =
     choose [
         path "/" >=> (OK "Home")
         path "/posts" >=> choose [
-            GET >=> warbler (fun _ -> Db.getPeople () |> JSON)
+            GET >=> warbler (fun _ -> Db.getStuff () |> JSON)
             POST >=> createPost
         ]
         pathScan "/posts/%d" 
