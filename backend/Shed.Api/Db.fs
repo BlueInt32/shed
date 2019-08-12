@@ -29,6 +29,14 @@ let getPeople () =
 
 // http://www.codesuji.com/2017/07/29/F-and-Dapper/
 
+// Also worth trying 
+// https://dev.to/kspeakman/dirt-simple-sql-queries-in-f-a37
+
+//////////////////////////////////////
+// If all else fails, try out FsSQL //
+// https://github.com/mausch/FsSql  //
+//////////////////////////////////////
+
 // Initialize connectionstring
 let databaseFilename = __SOURCE_DIRECTORY__ + @"..\shed.db"
 let connectionStringFile = sprintf "Data Source=%s;Version=3;New=False;Compress=True;" databaseFilename  
@@ -61,7 +69,18 @@ let getStuff () =
     let results1 = 
         let connection = new SQLiteConnection(connectionStringFile)
         connection.Open()
-        connection.Query<Post>(filteredSql)
+        let lookup = new Dictionary<int, Post>()
+        connection.Query<Post, Tag, Post>(
+            filteredSql, 
+            fun (post, tag) -> 
+                let postRef = {}
+                if lookup.TryGetValue(post.Id, postRef) then 
+                    lookup.Add(post.Id, postRef)
+                match postRef.Tags with
+                    | Some t -> postRef.Tags.
+                    | None -> ()
+
+            )
 
     printfn "Query (1):"
     results1 
