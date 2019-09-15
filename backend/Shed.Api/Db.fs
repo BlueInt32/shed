@@ -24,22 +24,6 @@ let execNonQueryf sql = Sql.execNonQueryF connMgr sql
 let execNonQuery sql p = Sql.execNonQuery connMgr sql p |> ignore 
 let exec sql = execNonQuery sql []
 
-let addStuff () = 
-    let connection = new SQLiteConnection(connectionStringFile)
-    connection.Open()
-
-    // Create table structure
-    let structureSql =
-        "create table Trades (" +
-        "Symbol varchar(20), " +
-        "Timestamp datetime, " + 
-        "Price float, " + 
-        "TradeSize float)"
-
-    let structureCommand = new SQLiteCommand(structureSql, connection)
-    structureCommand.ExecuteNonQuery() 
-
-
 let getPostsNumber (): int64 = 
     // let filteredSql = "select * From Posts " 
     execScalar "select count(*) from posts" [] |> Option.get 

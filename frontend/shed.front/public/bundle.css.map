@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "..\\src\\App.svelte"
+  ],
+  "sourcesContent": [
+    "<script>\n  export let name;\n  import Counter from \"./Counter.svelte\";\n  import PostsList from \"./PostsList.svelte\";\n</script>\n\n<style>\n  h1 {\n    color: purple;\n  }\n</style>\n\n<h1>Hello {name}!</h1>\n<img\n  src=\"https://image.shutterstock.com/image-photo/colorful-flower-on-dark-tropical-260nw-721703848.jpg\"\n  alt=\"coucou\" />\n<PostsList />\n"
+  ],
+  "names": [],
+  "mappings": "AAOE,EAAE,eAAC,CAAC,AACF,KAAK,CAAE,MAAM,AACf,CAAC"
+}
