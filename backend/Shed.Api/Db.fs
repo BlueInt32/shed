@@ -3,48 +3,27 @@
 open System
 open System.Collections.Generic
 open System.Data.SQLite
-open Dapper
 open Shed.Domain
+open System.Data
 
-type Person = {
-  Id : int
-  Name : string
-  Age : int
-  Email : string
-}
-let private peopleStorage = new Dictionary<int, Post>()
-let getPeople () =
-    let onePost = {
-        Id = 1; 
-        Title = Some "Billy-Joe"; 
-        FileType = Image; 
-        FileData = { Extension = ".jpg"; ThumbHeight = 200; ThumbWidth = 300;}
-        CreationDate = DateTime.Now;
-        LastUpdateDate = DateTime.Now;
-        Tags = None; }
-    peopleStorage.Add(1, onePost)
-    peopleStorage.Values |> Seq.map (fun p -> p)
-
-// Interacting with F# data
-
-// http://www.codesuji.com/2017/07/29/F-and-Dapper/
-
-// Also worth trying 
-// https://dev.to/kspeakman/dirt-simple-sql-queries-in-f-a37
-
-//////////////////////////////////////
-// If all else fails, try out FsSQL //
 // https://github.com/mausch/FsSql  //
-//////////////////////////////////////
-
-// Initialize connectionstring
-let databaseFilename = __SOURCE_DIRECTORY__ + @"..\shed.db"
+let databaseFilename = __SOURCE_DIRECTORY__ + @"\..\shed.db"
 let connectionStringFile = sprintf "Data Source=%s;Version=3;New=False;Compress=True;" databaseFilename  
 
-// Create database
-// SQLiteConnection.CreateFile(databaseFilename)
+// type Person = { Name : string; Age : int }
+let openConnection() = 
+    let conn = new System.Data.SQLite.SQLiteConnection(connectionStringFile) 
+    conn.Open() 
+    conn :> IDbConnection 
 
-// Open connection
+let connMgr = Sql.withNewConnection openConnection 
+let execScalar sql = Sql.execScalar connMgr sql 
+let execReader sql = Sql.execReader connMgr sql 
+let execReaderf sql = Sql.execReaderF connMgr sql 
+let execNonQueryf sql = Sql.execNonQueryF connMgr sql 
+let execNonQuery sql p = Sql.execNonQuery connMgr sql p |> ignore 
+let exec sql = execNonQuery sql []
+
 let addStuff () = 
     let connection = new SQLiteConnection(connectionStringFile)
     connection.Open()
@@ -61,28 +40,21 @@ let addStuff () =
     structureCommand.ExecuteNonQuery() 
 
 
-let getStuff () = 
-    let filteredSql = 
-        "select * From Posts " 
-        // "where symbol = @symbol and tradesize >= @mintradesize"
+let getPostsNumber (): int64 = 
+    // let filteredSql = "select * From Posts " 
+    execScalar "select count(*) from posts" [] |> Option.get 
 
-    let results1 = 
-        let connection = new SQLiteConnection(connectionStringFile)
-        connection.Open()
-        let lookup = new Dictionary<int, Post>()
-        connection.Query<Post, Tag, Post>(
-            filteredSql, 
-            fun (post, tag) -> 
-                let postRef = {}
-                if lookup.TryGetValue(post.Id, postRef) then 
-                    lookup.Add(post.Id, postRef)
-                match postRef.Tags with
-                    | Some t -> postRef.Tags.
-                    | None -> ()
-
-            )
-
-    printfn "Query (1):"
-    results1 
-//|> Seq.iter (fun x -> 
-//    printfn "%-7s %-19s %.2f [%.8f]" x.Symbol (x.Timestamp.ToString("s")) x.Price x.TradeSize)
+let getPosts () = 
+    execReader "select * from posts" [] 
+    |> Seq.ofDataReader
+    |> Seq.map (fun dr -> 
+    // |> Seq.iter (fun dr -> 
+        let id = (dr?Id).Value 
+        let title = (dr?Title).Value 
+        let creationDate = 
+            match dr?CreationDate with 
+            | None -> DateTime.MinValue 
+            | Some x -> DateTime.Parse(x) 
+        // printfn "Id: ?; Name: %s; Address: %s" name creationDate)
+        { Id=id; Title= Some title; CreationDate= creationDate; }
+        )

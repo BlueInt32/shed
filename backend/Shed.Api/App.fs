@@ -21,7 +21,7 @@ let webPart =
     choose [
         path "/" >=> (OK "Home")
         path "/posts" >=> choose [
-            GET >=> warbler (fun _ -> Db.getStuff () |> JSON)
+            GET >=> warbler (fun _ -> Db.getPosts () |> JSON)
             POST >=> createPost
         ]
         pathScan "/posts/%d" 

@@ -14,13 +14,14 @@ type Tag = {
     Label:string; }
 
 type Post = { 
-    Id:int; 
+    Id:int64; 
     Title: Option<string>;
-    FileType: FileType;
-    FileData: FileData;
+    //FileType: FileType;
+    //FileData: FileData;
     CreationDate: DateTime;
-    LastUpdateDate: DateTime;
-    Tags: Option<Tag[]>;}
+    //LastUpdateDate: DateTime;
+    //Tags: Option<Tag[]>;
+    }
 
 module Say =
     let hello name =
